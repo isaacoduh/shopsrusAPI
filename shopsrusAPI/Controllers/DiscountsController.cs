@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using shopsrusAPI.Data;
 using shopsrusAPI.Models;
 using shopsrusAPI.Services;
@@ -36,6 +37,23 @@ namespace shopsrusAPI.Controllers
         public IActionResult Get(int id)
         {
             Discount discount = _dataRepository.Get(id);
+            if(discount == null)
+            {
+                return NotFound("Discount not found!");
+            }
+
+            return Ok(discount);
+        }
+
+        //GET api/discounts/{type}
+        [Route("GetDiscountByTye/{type}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDiscountByType(string type)
+        {
+            Discount discount = await _context.Discounts
+                .Where(d => d.Type == type)
+                .FirstOrDefaultAsync();
+
             if(discount == null)
             {
                 return NotFound("Discount not found!");
