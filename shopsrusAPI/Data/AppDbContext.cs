@@ -12,23 +12,6 @@ namespace shopsrusAPI.Data
         }
 
         public DbSet<Customer> Customers { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Customer>().HasData(new Customer
-            {
-                Id = 1,
-                FirstName = "Isaac",
-                LastName = "Oduh",
-                Email = "isoduh@gmail.com",
-                Phone = "08031323231"
-            }, new Customer {
-               Id = 2,
-               FirstName = "Moyin",
-               LastName = "Lawal",
-               Email = "moyinlawal@gmail.com",
-               Phone = "08912324323"
-            }) ;
-        }
+        public DbSet<Discount> Discounts { get; set; }
     }
 }
