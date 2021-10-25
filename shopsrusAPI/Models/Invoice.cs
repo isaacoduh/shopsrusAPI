@@ -10,5 +10,7 @@ namespace shopsrusAPI.Models
         [Required]
         public decimal Amount { get; set; }
         public decimal Discount { get; set; }
+
+
     }
 }

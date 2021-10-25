@@ -40,13 +40,16 @@ namespace shopsrusAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] CreateInvoiceDTO createInvoiceDTO)
         {
+            // find the customer
+            Customer customer = _context.Customers.Find(createInvoiceDTO.customerId);
             // calculate the invoice
             var percentageDiscount = createInvoiceDTO.Discount / 100;
             var totalPrice = createInvoiceDTO.Amount * (1 - percentageDiscount);
 
             var invoiceItem = new InvoiceDTO
             {
-                Bill = totalPrice
+                Bill = totalPrice,
+                customer = customer
             };
 
             return Ok(invoiceItem);
