@@ -48,25 +48,40 @@ namespace shopsrusAPI.Controllers
             Discount discount = _context.Discounts.Where(d => d.Type == createInvoiceDTO.discountCode).FirstOrDefault();
 
             // calculate the invoice using the value of the discount code applied
+            decimal subtotal = 0;
+
+            // check if the total amount is more than 100 then calculate a special discount on
+            if(createInvoiceDTO.Amount > 100)
+            {
+                var deduction = (Math.Truncate(createInvoiceDTO.Amount / 100)) * 5;
+                subtotal = createInvoiceDTO.Amount - deduction;
+               
+            }
+            else
+            {
+                subtotal = createInvoiceDTO.Amount;
+            }
+
+            
 
             var percentageDiscount = discount.Value / 100;
 
-            var totalPrice = createInvoiceDTO.Amount * (1 - percentageDiscount);
+            var totalPrice = subtotal * (1 - percentageDiscount);
 
             // find the discount based on the code applied
 
 
-            var invoiceItemss = new InvoiceDTO
-            {
-                Bill = totalPrice,
-                customer = customer,
-                discountApplied = discount
-            };
+            //var invoiceItemss = new InvoiceDTO
+            //{
+            //    Bill = totalPrice,
+            //    customer = customer,
+            //    discountApplied = discount
+            //};
             var invoiceItem = new Invoice
             {
-               Bill = totalPrice,
-               Customer = customer,
-               Discount = discount.Value
+                Bill = totalPrice,
+                Customer = customer,
+                Discount = discount.Value
             };
 
             _context.Invoices.Add(invoiceItem);
@@ -77,6 +92,7 @@ namespace shopsrusAPI.Controllers
             //return Ok(invoiceItem);
 
             //return Ok(discount);
+
         }
 
         // PUT api/values/5
