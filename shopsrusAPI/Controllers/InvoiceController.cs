@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using shopsrusAPI.Data;
 using shopsrusAPI.Models;
 using shopsrusAPI.Models.DTOs;
@@ -25,15 +26,16 @@ namespace shopsrusAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Invoice> invoices = _context.Invoices.ToList();
+            IEnumerable<Invoice> invoices = _context.Invoices.Include(i => i.Customer).ToList();
             return Ok(invoices);
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            Invoice invoice = _context.Invoices.Include(i => i.Customer).Where(i => i.Id == id).FirstOrDefault();
+            return Ok(invoice);
         }
 
         // POST api/values
@@ -42,17 +44,39 @@ namespace shopsrusAPI.Controllers
         {
             // find the customer
             Customer customer = _context.Customers.Find(createInvoiceDTO.customerId);
-            // calculate the invoice
-            var percentageDiscount = createInvoiceDTO.Discount / 100;
+            // find the discount code
+            Discount discount = _context.Discounts.Where(d => d.Type == createInvoiceDTO.discountCode).FirstOrDefault();
+
+            // calculate the invoice using the value of the discount code applied
+
+            var percentageDiscount = discount.Value / 100;
+
             var totalPrice = createInvoiceDTO.Amount * (1 - percentageDiscount);
 
-            var invoiceItem = new InvoiceDTO
+            // find the discount based on the code applied
+
+
+            var invoiceItemss = new InvoiceDTO
             {
                 Bill = totalPrice,
-                customer = customer
+                customer = customer,
+                discountApplied = discount
+            };
+            var invoiceItem = new Invoice
+            {
+               Bill = totalPrice,
+               Customer = customer,
+               Discount = discount.Value
             };
 
-            return Ok(invoiceItem);
+            _context.Invoices.Add(invoiceItem);
+            _context.SaveChanges();
+
+            return CreatedAtRoute("Get", new { Id = invoiceItem.Id }, invoiceItem);
+
+            //return Ok(invoiceItem);
+
+            //return Ok(discount);
         }
 
         // PUT api/values/5

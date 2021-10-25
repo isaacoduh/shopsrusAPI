@@ -5,6 +5,6 @@ namespace shopsrusAPI.Models.DTOs
     {
         public int customerId { get; set; }
         public decimal Amount { get; set; }
-        public decimal Discount { get; set; }
+        public string discountCode { get; set; }
     }
 }
