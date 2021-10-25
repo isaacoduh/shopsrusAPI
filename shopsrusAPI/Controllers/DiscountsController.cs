@@ -33,7 +33,7 @@ namespace shopsrusAPI.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             Discount discount = _dataRepository.Get(id);
@@ -46,21 +46,23 @@ namespace shopsrusAPI.Controllers
         }
 
         //GET api/discounts/{type}
-        [Route("GetDiscountByTye/{type}")]
+        [Route("GetDiscountByType/{type}/")]
         [HttpGet]
         public async Task<IActionResult> GetDiscountByType(string type)
         {
             Discount discount = await _context.Discounts
                 .Where(d => d.Type == type)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
 
-            if(discount == null)
+            switch (discount)
             {
-                return NotFound("Discount not found!");
+                case null:
+                    return NotFound("Discount not found!");
+                default:
+                    return Ok(discount);
             }
-
-            return Ok(discount);
         }
+
 
         // POST api/values
         [HttpPost]

@@ -13,5 +13,10 @@ namespace shopsrusAPI.Models
         public decimal Value { get; set; }
         [Required]
         public string Description { get; set; }
+
+        public static implicit operator Discount(decimal v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

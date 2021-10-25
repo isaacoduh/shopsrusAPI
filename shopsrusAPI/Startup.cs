@@ -31,6 +31,7 @@ namespace shopsrusAPI
         {
             services.AddDbContext<AppDbContext>(option => option.UseSqlite(Configuration.GetConnectionString("cs")));
             services.AddTransient<IDataRepository<Customer>, CustomerService>();
+            services.AddTransient<IDataRepository<Discount>, DiscountService>();
             services.AddControllers();
         }
 
