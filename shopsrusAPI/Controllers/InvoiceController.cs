@@ -62,21 +62,10 @@ namespace shopsrusAPI.Controllers
                 subtotal = createInvoiceDTO.Amount;
             }
 
-            
-
             var percentageDiscount = discount.Value / 100;
 
             var totalPrice = subtotal * (1 - percentageDiscount);
 
-            // find the discount based on the code applied
-
-
-            //var invoiceItemss = new InvoiceDTO
-            //{
-            //    Bill = totalPrice,
-            //    customer = customer,
-            //    discountApplied = discount
-            //};
             var invoiceItem = new Invoice
             {
                 Bill = totalPrice,
@@ -88,10 +77,6 @@ namespace shopsrusAPI.Controllers
             _context.SaveChanges();
 
             return CreatedAtRoute("Get", new { Id = invoiceItem.Id }, invoiceItem);
-
-            //return Ok(invoiceItem);
-
-            //return Ok(discount);
 
         }
 
